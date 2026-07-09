@@ -16,9 +16,9 @@ calculator) runs with nothing installed at all; the rest need only a local runti
 
 This repo is **standalone**: it teaches everything it needs on its own. It's the
 full version of the "use a local model" footnote in the
-[OpenAI](https://github.com/Ailuue/openai-api-deep-dive) and
-[Prompt Engineering](https://github.com/Ailuue/prompt-engineering-deep-dive) dives,
-and it's the place the [Fine-tuning dive](https://github.com/Ailuue/fine-tuning-deep-dive)
+[OpenAI](https://github.com/alexvervloet/openai-api-deep-dive) and
+[Prompt Engineering](https://github.com/alexvervloet/prompt-engineering-deep-dive) dives,
+and it's the place the [Fine-tuning dive](https://github.com/alexvervloet/fine-tuning-deep-dive)
 points to for *running* open weights — but its code depends on none of them.
 
 Like its siblings, it's meant to be *walked through*. Each section ends with
@@ -279,7 +279,7 @@ You've run a model end to end on your own hardware. The frontier is more control
 and more scale:
 
 - **Fine-tune the open weights you're running** — LoRA/PEFT with
-  `transformers`/`peft`/`trl`; the [Fine-tuning dive](https://github.com/Ailuue/fine-tuning-deep-dive)
+  `transformers`/`peft`/`trl`; the [Fine-tuning dive](https://github.com/alexvervloet/fine-tuning-deep-dive)
   explains the concepts, this repo runs the result.
 - **GPU serving with vLLM** — continuous batching and high throughput for many
   concurrent users.
@@ -308,7 +308,7 @@ traffic:
 
 The general ops machinery — observability, cost, reliability, caching, guardrails,
 prompt versioning, eval gates — is built from scratch and wired into one running app
-in **[Production](https://github.com/Ailuue/ai-in-production-deep-dive)** (#8 in the
+in **[Production](https://github.com/alexvervloet/ai-in-production-deep-dive)** (#8 in the
 series), which runs offline on a mock provider.
 
 ---
@@ -364,33 +364,34 @@ the OpenAI SDK, one changed URL.
 
 ## The series
 
-This is one of thirteen standalone, hands-on deep dives into building with LLM APIs — eight core, plus five bonus dives.
+This is one of sixteen standalone, hands-on deep dives into building with LLM APIs — eight core, plus eight bonus dives.
 Each one stands on its own — its own setup, examples, and capstone — and they all
 share the same house style: provider-agnostic where it makes sense, built from
 scratch (no frameworks), offline-first examples, and a real capstone. Do them in
 any order; this sequence builds naturally:
 
-1. [OpenAI API](https://github.com/Ailuue/openai-api-deep-dive) — the API from zero
-2. [Claude API](https://github.com/Ailuue/claude-api-deep-dive) — the same ideas, the Anthropic way
-3. [Prompt Engineering](https://github.com/Ailuue/prompt-engineering-deep-dive) — shape model behavior with better prompts
-4. [RAG](https://github.com/Ailuue/rag-deep-dive) — answer questions over your own documents
-5. [Evals](https://github.com/Ailuue/evals-deep-dive) — measure whether a change actually helps
-6. [Agents](https://github.com/Ailuue/agents-deep-dive) — give a model tools and a loop so it can act
-7. [Prompt Injection & Guardrails](https://github.com/Ailuue/prompt-injection-deep-dive) — attack and defend all of the above
-8. [Production](https://github.com/Ailuue/ai-in-production-deep-dive) — operate one app end to end
+1. [OpenAI API](https://github.com/alexvervloet/openai-api-deep-dive) — the API from zero
+2. [Claude API](https://github.com/alexvervloet/claude-api-deep-dive) — the same ideas, the Anthropic way
+3. [Prompt Engineering](https://github.com/alexvervloet/prompt-engineering-deep-dive) — shape model behavior with better prompts
+4. [RAG](https://github.com/alexvervloet/rag-deep-dive) — answer questions over your own documents
+5. [Evals](https://github.com/alexvervloet/evals-deep-dive) — measure whether a change actually helps
+6. [Agents](https://github.com/alexvervloet/agents-deep-dive) — give a model tools and a loop so it can act
+7. [Prompt Injection & Guardrails](https://github.com/alexvervloet/prompt-injection-deep-dive) — attack and defend all of the above
+8. [Production](https://github.com/alexvervloet/ai-in-production-deep-dive) — operate one app end to end
 
 **Bonus dives** — standalone, slotting in where they're most useful:
 
-- [Context Engineering](https://github.com/Ailuue/context-engineering-deep-dive) — manage what's in the window: memory, compaction, assembly
-- [Multimodal](https://github.com/Ailuue/multimodal-deep-dive) — images & audio, not just text
-- [Fine-tuning](https://github.com/Ailuue/fine-tuning-deep-dive) — teach a model new behavior by example
-- [MCP](https://github.com/Ailuue/mcp-deep-dive) — serve tools, data & prompts to any LLM over a standard protocol
-- [Local Models](https://github.com/Ailuue/local-models-deep-dive) — run open-weight models on your own machine
-- [Agent Harnesses](https://github.com/Ailuue/agent-harness-deep-dive) — build on the loop: hooks, permissions, sandboxing, subagents
-- [Realtime Voice](https://github.com/Ailuue/realtime-voice-deep-dive) — low-latency speech-to-speech agents
+- [Context Engineering](https://github.com/alexvervloet/context-engineering-deep-dive) — manage what's in the window: memory, compaction, assembly
+- [Multimodal](https://github.com/alexvervloet/multimodal-deep-dive) — images & audio, not just text
+- [Fine-tuning](https://github.com/alexvervloet/fine-tuning-deep-dive) — teach a model new behavior by example
+- [MCP](https://github.com/alexvervloet/mcp-deep-dive) — serve tools, data & prompts to any LLM over a standard protocol
+- [Local Models](https://github.com/alexvervloet/local-models-deep-dive) — run open-weight models on your own machine
+- [Agent Harnesses](https://github.com/alexvervloet/agent-harness-deep-dive) — build on the loop: hooks, permissions, sandboxing, subagents
+- [Realtime Voice](https://github.com/alexvervloet/realtime-voice-deep-dive) — low-latency speech-to-speech agents
+- [Observability](https://github.com/alexvervloet/observability-deep-dive) — watch a running app over time: drift, quality, alerting, the flywheel
 
 **Local Models is a bonus dive in the series.** It pairs naturally with the two API
 dives (#1–2) — it's their code with one changed `base_url` — and with
-[Fine-tuning](https://github.com/Ailuue/fine-tuning-deep-dive), which explains
+[Fine-tuning](https://github.com/alexvervloet/fine-tuning-deep-dive), which explains
 training the open weights you run here. Section 11 lets you run the *whole* series
 locally at zero cost.

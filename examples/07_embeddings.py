@@ -1,14 +1,13 @@
 """
-Example 07 — embeddings, locally: turn text into vectors, for free.
-===================================================================
+Example 07: embeddings, locally: turn text into vectors, for free.
 
 Embeddings (text → a vector of numbers, so similar meanings sit close together)
 power search, RAG, clustering, and classification. They also run locally, through
-the same OpenAI-compatible endpoint — just a different model. With Ollama:
+the same OpenAI-compatible endpoint, just a different model. With Ollama:
 `ollama pull nomic-embed-text`. No per-token embedding bill, ever.
 
 This script embeds a few sentences with your LOCAL embedding model and ranks them
-by cosine similarity to a query — the exact core of the RAG deep dive, but $0 and
+by cosine similarity to a query: the exact core of the RAG deep dive, but $0 and
 offline. (The cosine function is five lines of standard library, so you can see
 there's no magic.)
 
@@ -67,7 +66,7 @@ def main():
     print("documents ranked by similarity:")
     for score, doc in scored:
         print(f"  {score:.3f}  {doc}")
-    print("\nThe top hit is about memory/quantization — retrieved by MEANING, not")
+    print("\nThe top hit is about memory/quantization, retrieved by MEANING, not")
     print("keywords. Wire this into a chunk store and you have local RAG (Example 10).")
 
 

@@ -1,17 +1,16 @@
 """
-Example 08 — structured output & tool calling on local models (the caveats).
-============================================================================
+Example 08: structured output & tool calling on local models (the caveats).
 
-Two features you rely on with hosted models — "give me JSON" and "call this
-function" — also work locally, but with rougher edges. Smaller models follow a
+Two features you rely on with hosted models, "give me JSON" and "call this
+function", also work locally, but with rougher edges. Smaller models follow a
 schema less reliably and sometimes wrap JSON in prose or markdown fences. The fix
 is the same defensive habit from the API/prompt deep dives: ask clearly, and
 parse forgivingly.
 
 This script shows both:
-  1. Structured output — request JSON (using the OpenAI-compatible `response_format`
+  1. Structured output: request JSON (using the OpenAI-compatible `response_format`
      when the server supports it), then parse it defensively (strip ``` fences).
-  2. Tool calling — describe one tool and let the model choose to call it. Support
+  2. Tool calling: describe one tool and let the model choose to call it. Support
      varies by model; if your model doesn't emit a tool call, the script says so
      rather than pretending.
 
@@ -39,7 +38,7 @@ def strip_fences(text: str) -> str:
 
 
 def structured_output():
-    print("1) Structured output — asking for JSON\n")
+    print("1) Structured output: asking for JSON\n")
     messages = [
         {"role": "system", "content": "Extract fields and reply with ONLY a JSON object, no prose, no fences."},
         {"role": "user", "content": "Order: 3 large coffees and 1 muffin for Dana, table 7."},
@@ -56,12 +55,12 @@ def structured_output():
         data = json.loads(strip_fences(raw))
         print("  parsed OK:", data)
     except json.JSONDecodeError:
-        print("  !! couldn't parse as JSON — small models sometimes drift. Tighten the")
+        print("  !! couldn't parse as JSON; small models sometimes drift. Tighten the")
         print("     prompt, lower temperature, or try a stronger model (qwen2.5/llama3.1).")
 
 
 def tool_calling():
-    print("\n2) Tool calling — letting the model choose a function\n")
+    print("\n2) Tool calling: letting the model choose a function\n")
     tools = [{
         "type": "function",
         "function": {
@@ -104,7 +103,7 @@ def main():
     structured_output()
     tool_calling()
     print("\nTakeaway: the FEATURES exist locally, but reliability tracks model size.")
-    print("Keep the defensive parsing you learned for hosted models — you need it more.")
+    print("Keep the defensive parsing you learned for hosted models; you need it more.")
 
 
 if __name__ == "__main__":

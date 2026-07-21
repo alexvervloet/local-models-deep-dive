@@ -1,18 +1,17 @@
 """
-Example 04 — quantization: the size / quality / speed tradeoff.
-===============================================================
+Example 04: quantization: the size / quality / speed tradeoff.
 
 Quantization stores each weight in fewer bits. fp16 uses 2 bytes per weight; q8
 about 1; q4 about half a byte. Fewer bits = a smaller file, less memory, and
-(because there's less to move) often faster generation — at some cost to quality.
+(because there's less to move) often faster generation, at some cost to quality.
 For most tasks q4–q6 is the sweet spot: most of the quality, a fraction of the
 size.
 
 This script shows the tradeoff two ways:
-  1. OFFLINE — the size and memory of one model across every quant level.
-  2. LIVE (if a server is up) — it asks your model the same question and reports
+  1. OFFLINE: the size and memory of one model across every quant level.
+  2. LIVE (if a server is up): it asks your model the same question and reports
      tokens/sec, so you can feel the speed. (To compare quality across quants for
-     real, pull two tags — e.g. `qwen2.5:7b-instruct-q4_0` and `...-q8_0` — and run
+     real, pull two tags, e.g. `qwen2.5:7b-instruct-q4_0` and `...-q8_0`, and run
      this against each.)
 
     python examples/04_quantization_tradeoff.py
@@ -34,9 +33,9 @@ def main():
     notes = {
         "fp16": "reference (full)",
         "q8": "near-lossless",
-        "q6": "great — common default",
+        "q6": "great, common default",
         "q5": "very good",
-        "q4": "good — the laptop default",
+        "q4": "good, the laptop default",
         "q3": "noticeable degradation",
         "q2": "usually too lossy",
     }

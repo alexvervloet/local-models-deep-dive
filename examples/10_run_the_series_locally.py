@@ -1,10 +1,9 @@
 """
-Example 10 — run the rest of the series locally, for $0.
-========================================================
+Example 10: run the rest of the series locally, for $0.
 
 The payoff of "local speaks the OpenAI API": the sibling deep dives (prompt
 engineering, RAG, agents, evals) were built on the OpenAI SDK, so they run against
-your local model with only an environment change — no code edits. This script
+your local model with only an environment change, with no code edits. This script
 proves it by running a tiny, self-contained RAG loop (retrieve → ground → answer)
 entirely on the local server, exactly like the RAG deep dive's pipeline, but free.
 
@@ -28,7 +27,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from local import providers
 
-# A tiny "knowledge base" — stand-in for the RAG deep dive's document corpus.
+# A tiny "knowledge base": stand-in for the RAG deep dive's document corpus.
 CORPUS = [
     "Acme Cloud's Plus plan costs $20 per month, billed monthly.",
     "The Free plan includes 5 GB of storage and community support.",
@@ -53,7 +52,7 @@ def main():
     providers.ensure_server()
     print(f"Running a local RAG loop on {providers.describe()}\n")
 
-    # 1) RETRIEVE — embed the corpus + question, pick the most similar chunks.
+    # 1) RETRIEVE: embed the corpus + question, pick the most similar chunks.
     try:
         doc_vecs = embed(CORPUS)
         (q_vec,) = embed([QUESTION])
@@ -67,7 +66,7 @@ def main():
     for c in top:
         print(f"  • {c}")
 
-    # 2) GROUND + ANSWER — feed only the retrieved context to the local model.
+    # 2) GROUND + ANSWER: feed only the retrieved context to the local model.
     context = "\n".join(f"- {c}" for c in top)
     messages = [
         {"role": "system", "content": "Answer ONLY from the context. If it's not there, say you don't know."},
@@ -77,7 +76,7 @@ def main():
     print(" ", providers.chat(messages, temperature=0.2))
 
     print("\n---")
-    print("That was retrieve → ground → answer — the RAG deep dive's whole pipeline —")
+    print("That was retrieve -> ground -> answer, the RAG deep dive's whole pipeline,")
     print("running on your laptop at zero cost. Set OPENAI_BASE_URL in the other repos")
     print("and they run locally too: prompt engineering, agents, evals, all of it.")
 

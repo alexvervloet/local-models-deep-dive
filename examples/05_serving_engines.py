@@ -1,6 +1,5 @@
 """
-Example 05 — serving engines: Ollama vs llama.cpp vs vLLM.
-==========================================================
+Example 05: serving engines: Ollama vs llama.cpp vs vLLM.
 
 The model is a file; a SERVING ENGINE loads it and answers requests. They all
 expose the same OpenAI-compatible API (that's why your code doesn't change), but
@@ -14,7 +13,7 @@ they trade off ease vs. speed vs. scale. Pick by your situation:
               directly for maximum control over GGUF files and flags. Endpoint
               :8080. Reach for it when you want to tune every knob.
 
-  LM Studio   A GUI for the above — nice for browsing/trying models. Endpoint :1234.
+  LM Studio   A GUI for the above, nice for browsing/trying models. Endpoint :1234.
 
   vLLM        Built for SERVING at scale: high throughput, continuous batching,
               many concurrent users, on a real GPU. Overkill for one laptop user;
@@ -58,7 +57,7 @@ def main():
         running = _up(url)
         any_up = any_up or running
         mark = "● running" if running else "○ not found"
-        print(f"  {mark:<12} {name:<10} {url:<26} — {note}")
+        print(f"  {mark:<12} {name:<10} {url:<26} {note}")
     print()
 
     if not any_up:
@@ -72,7 +71,7 @@ def main():
     print("  • Just learning / one user on a laptop  -> Ollama (or LM Studio).")
     print("  • Want to hand-tune GGUF files & flags  -> llama.cpp (llama-server).")
     print("  • Serving many users on a GPU box       -> vLLM.")
-    print("  • Either way your CODE is identical — only the base_url changes.")
+    print("  • Either way your CODE is identical; only the base_url changes.")
 
 
 if __name__ == "__main__":

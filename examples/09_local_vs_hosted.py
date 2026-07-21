@@ -1,23 +1,22 @@
 """
-Example 09 — when local beats hosted (and when it doesn't).
-===========================================================
+Example 09: when local beats hosted (and when it doesn't).
 
-Local isn't "better" or "cheaper" in the abstract — it's a set of tradeoffs. This
+Local isn't "better" or "cheaper" in the abstract. It's a set of tradeoffs. This
 script lays out the decision so you can make it on purpose, and (if a server is up)
 measures your local latency so one column isn't hypothetical.
 
 The honest scorecard:
 
   Local WINS on:
-    * Privacy / data control — nothing leaves your machine. Often the whole reason.
-    * Cost at volume — after hardware, generation is free; no per-token bill.
-    * Offline / air-gapped — works with no internet.
+    * Privacy / data control: nothing leaves your machine. Often the whole reason.
+    * Cost at volume: after hardware, generation is free; no per-token bill.
+    * Offline / air-gapped: works with no internet.
     * No rate limits, no vendor lock-in, full control of the model & version.
 
   Hosted WINS on:
-    * Peak quality — the largest frontier models don't fit on your laptop.
-    * Zero ops — no GPU, drivers, or model management to babysit.
-    * Elastic scale — burst to thousands of requests without buying hardware.
+    * Peak quality: the largest frontier models don't fit on your laptop.
+    * Zero ops: no GPU, drivers, or model management to babysit.
+    * Elastic scale: burst to thousands of requests without buying hardware.
     * Latest models on day one.
 
   Rule of thumb: prototype and reach for top quality on HOSTED; move high-volume,
@@ -48,7 +47,7 @@ ROWS = [
 
 
 def main():
-    print("Local vs. hosted — pick per requirement, not by vibes:\n")
+    print("Local vs. hosted, picked per requirement rather than by vibes:\n")
     print(f"  {'requirement':<26}{'winner':<8}why")
     for req, winner, why in ROWS:
         print(f"  {req:<26}{winner:<8}{why}")
@@ -59,7 +58,7 @@ def main():
         t0 = time.time()
         _ = providers.chat([{"role": "user", "content": "Reply with exactly: ok"}], temperature=0)
         print(f"  round-trip for a tiny request: {time.time() - t0:.2f}s")
-        print("  No network hop — but speed is capped by YOUR hardware, not a datacenter GPU.")
+        print("  No network hop, but speed is capped by YOUR hardware, not a datacenter GPU.")
     else:
         print("(Start a local server to measure your own latency here.)")
 

@@ -1,12 +1,11 @@
 """
-Setup check — run this first.
-=============================
+Setup check: run this first.
 
     python check_setup.py
 
 This repo is different from its siblings: there's no API key to check, because the
 model runs on YOUR machine. So instead of a key, this checks the thing that
-matters here — **is a local model server actually running, and does it have a
+matters here: **is a local model server actually running, and does it have a
 model pulled?** It also checks your Python version and the (tiny) package list.
 Makes no hosted API call and costs nothing.
 
@@ -76,7 +75,7 @@ def check_python():
     if (major, minor) >= (3, 10):
         ok(f"Python {major}.{minor} (3.10+ required)")
         return True
-    fail(f"Python {major}.{minor} — this repo needs Python 3.10 or newer.")
+    fail(f"Python {major}.{minor}: this repo needs Python 3.10 or newer.")
     print("    Install a newer Python from https://www.python.org/downloads/")
     return False
 
@@ -86,9 +85,9 @@ def check_dependencies():
     missing = []
     for import_name, pip_name, purpose in ALWAYS:
         if importlib.util.find_spec(import_name) is not None:
-            ok(f"{pip_name} — {purpose}")
+            ok(f"{pip_name}: {purpose}")
         else:
-            fail(f"{pip_name} MISSING — {purpose}")
+            fail(f"{pip_name} MISSING: {purpose}")
             missing.append(pip_name)
     if missing:
         print("\n    Install everything with:")
@@ -129,7 +128,7 @@ def check_server(env):
         fail(f"No server is answering at {base_url}.")
         print("    This repo runs models locally, so a runtime must be up. Quickest path:")
         print("      1. Install Ollama:   https://ollama.com")
-        print("      2. Start it (the app, or `ollama serve`) — it listens on :11434.")
+        print("      2. Start it (the app, or `ollama serve`); it listens on :11434.")
         print(f"      3. Pull a model:     ollama pull {model}")
         print("    (Using LM Studio / llama.cpp / vLLM instead? Set OPENAI_BASE_URL in .env.)")
         return False
@@ -152,7 +151,7 @@ def main():
     print(_c("Checking your setup for the Local Models deep dive...\n", "1"))
     env = _read_env_file()
     if env is None:
-        warn(".env not found — using defaults. Create it with:  cp .env.example .env")
+        warn(".env not found; using defaults. Create it with:  cp .env.example .env")
     py = check_python()
     deps = check_dependencies()
     server = check_server(env)
@@ -160,16 +159,16 @@ def main():
     print()
     if py and deps and server:
         print(_c("All set! 🎉", "1;32"))
-        print("Start here:  python examples/01_quant_math.py   (offline — no server needed)")
+        print("Start here:  python examples/01_quant_math.py   (offline, no server needed)")
         print("Then:        python examples/02_first_local_request.py")
         return 0
     if py and deps and not server:
-        print(_c("Almost — packages are fine, but no local server is running.", "1;33"))
+        print(_c("Almost. Packages are fine, but no local server is running.", "1;33"))
         print("You can still run the OFFLINE section now:")
         print("    python examples/01_quant_math.py")
         print("Start a server (see above) to run the rest.")
         return 1
-    print(_c("Not ready yet — fix the ✗ items above, then run this again.", "1;31"))
+    print(_c("Not ready yet. Fix the ✗ items above, then run this again.", "1;31"))
     print("(The offline calculator `examples/01_quant_math.py` works regardless.)")
     return 1
 

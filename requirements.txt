@@ -1,9 +1,9 @@
 # The whole repo runs against a LOCAL model server (Ollama by default), which
 # speaks the OpenAI-compatible API. So the only real dependency is the OpenAI SDK
-# — pointed at http://localhost:11434/v1 instead of OpenAI's servers. That's the
+# pointed at http://localhost:11434/v1 instead of OpenAI's servers. That's the
 # entire trick: same client, one changed base_url.
 
-# The OpenAI SDK — used as the client for your local server. No OpenAI key or
+# The OpenAI SDK: used as the client for your local server. No OpenAI key or
 # account is needed; the SDK just speaks the protocol your local server answers.
 openai>=1.30.0
 
@@ -16,8 +16,8 @@ rich>=13.0.0
 # --- NOT a pip dependency, but required ---
 # A local model runtime must be running. The default is Ollama (https://ollama.com):
 #   1. install it, 2. start it (it serves on :11434), 3. `ollama pull llama3.2`.
-# LM Studio, llama.cpp, and vLLM also expose an OpenAI-compatible endpoint — set
+# LM Studio, llama.cpp, and vLLM also expose an OpenAI-compatible endpoint: set
 # OPENAI_BASE_URL in .env to point at them instead (see .env.example).
 #
-# The offline sizing calculator (Section 4) needs none of the above — it's pure
+# The offline sizing calculator (Section 4) needs none of the above: it's pure
 # arithmetic on the standard library.

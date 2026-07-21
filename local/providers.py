@@ -1,10 +1,9 @@
 """
-local/providers.py — the ONE idea of this whole repo, in code.
-==============================================================
+local/providers.py: the ONE idea of this whole repo, in code.
 
 Open-weight models served locally speak the **OpenAI-compatible API**. So the
 exact `openai` SDK from the sibling repos works against a model on your own
-machine — you change `base_url` and nothing else:
+machine. You change `base_url` and nothing else:
 
     from openai import OpenAI
     client = OpenAI(base_url="http://localhost:11434/v1", api_key="ollama")
@@ -12,7 +11,7 @@ machine — you change `base_url` and nothing else:
 `base_url` points the SDK at the local server (Ollama's default port is 11434);
 `api_key` is required by the SDK but ignored by the local server, so any
 non-empty string works. Roles, streaming, token usage, structured output, tool
-calling — all the shapes you already know — come along unchanged.
+calling, all the shapes you already know, come along unchanged.
 
 This file is the keystone, the local equivalent of the sibling repos'
 `providers.py`. It does three things:
@@ -51,7 +50,7 @@ API_KEY = os.getenv("OPENAI_API_KEY", "local-no-key-needed")
 
 
 def describe() -> str:
-    """One-line summary of where we're pointed — handy for examples to print."""
+    """One-line summary of where we're pointed, handy for examples to print."""
     return f"local  (base_url={BASE_URL}, chat={CHAT_MODEL})"
 
 
@@ -71,14 +70,14 @@ def client():
 #
 # Crucial for a repo with no hosted fallback: before we make an LLM call we want
 # to tell the difference between "server down" (start Ollama) and "model missing"
-# (pull it). This hits the server's root with the stdlib only — no SDK, no model,
+# (pull it). This hits the server's root with the stdlib only: no SDK, no model,
 # so it works even before `pip install`.
 
 
 def server_up(timeout: float = 1.5) -> bool:
     """True if *something* answers at the local server's host:port.
 
-    We strip the `/v1` suffix and probe the root — Ollama answers "Ollama is
+    We strip the `/v1` suffix and probe the root; Ollama answers "Ollama is
     running" there. We only care that the TCP port is alive and speaks HTTP, not
     what it says, so any HTTP response (even a 404) counts as "up".
     """
@@ -109,14 +108,14 @@ def list_models() -> list[str]:
 #
 # This repo is FREE but not zero-effort: a local server has to be running. These
 # helpers turn the two common failures into instructive messages instead of
-# stack traces — the local analogue of the sibling repos' "missing API key" guard.
+# stack traces: the local analogue of the sibling repos' "missing API key" guard.
 
 _START_HELP = (
     f"No local server is reachable at {BASE_URL}.\n"
     "  This repo runs models on YOUR machine, so a local runtime must be up.\n"
     "  Quickest path (Ollama):\n"
     "    1. Install Ollama:        https://ollama.com\n"
-    "    2. Start it (the app, or `ollama serve`) — it listens on :11434.\n"
+    "    2. Start it (the app, or `ollama serve`); it listens on :11434.\n"
     f"    3. Pull a small model:    ollama pull {CHAT_MODEL}\n"
     "    4. Re-run this script.\n"
     "  Already using LM Studio / llama.cpp / vLLM? Set OPENAI_BASE_URL in .env\n"
@@ -128,12 +127,12 @@ def ensure_server(exit_code: int = 0) -> None:
     """Exit cleanly with start-up instructions if no local server is reachable.
 
     Call this at the top of any script that makes an LLM call. We exit 0 by
-    default so an absent server is treated as "skipped", not "failed" — nothing
+    default so an absent server is treated as "skipped", not "failed". Nothing
     was charged and no key was used.
     """
     if not server_up():
         print(_START_HELP)
-        print("\n(Nothing was charged and no key was used — local serving is free.)")
+        print("\n(Nothing was charged and no key was used; local serving is free.)")
         sys.exit(exit_code)
 
 
@@ -144,7 +143,7 @@ def _model_help(model: str) -> str:
         f"The server is up, but the call for model {model!r} failed.\n"
         f"{have_line}"
         f"  Most likely it isn't pulled yet. Run:  ollama pull {model}\n"
-        "  (Tags must match exactly — `ollama list` shows what you have.)"
+        "  (Tags must match exactly; `ollama list` shows what you have.)"
     )
 
 
@@ -152,7 +151,7 @@ def chat(messages: list[dict], model: str | None = None, **kwargs) -> str:
     """Send chat messages to the local model and return the reply text.
 
     On a missing model or a failed call it prints an instructive message and
-    exits cleanly (code 0) rather than crashing — same graceful-degradation rule
+    exits cleanly (code 0) rather than crashing, the same graceful-degradation rule
     as the rest of the repo. Extra kwargs (temperature, max_tokens, ...) pass
     straight through to the OpenAI-compatible endpoint.
     """
@@ -172,7 +171,7 @@ def chat(messages: list[dict], model: str | None = None, **kwargs) -> str:
 
 
 def stream(messages: list[dict], model: str | None = None, **kwargs):
-    """Yield reply chunks as they arrive — for a live, typewriter feel.
+    """Yield reply chunks as they arrive, for a live, typewriter feel.
 
     The caller is expected to have run `ensure_server()` already; this keeps the
     generator simple. The first chunk arriving slowly is normal: that delay is

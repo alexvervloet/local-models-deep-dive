@@ -1,6 +1,5 @@
 """
-local/sizing.py — will this model fit on my machine? (pure offline, no server).
-==============================================================================
+local/sizing.py: will this model fit on my machine? (pure offline, no server).
 
 The single most useful number before you `ollama pull` anything: **how much
 memory will this model need?** It comes from one back-of-the-envelope formula,
@@ -19,7 +18,7 @@ The formula:
     q4:    7e9 × 0.5  ≈  3.5 GB     ← why 4-bit is what fits on a laptop
 
 On top of the weights you need headroom for the **KV cache** (grows with context
-length) and the runtime itself — this module estimates that too. Everything here
+length) and the runtime itself, and this module estimates that too. Everything here
 is arithmetic on the standard library: no model, no server, no key, no network.
 """
 
@@ -29,14 +28,14 @@ from dataclasses import dataclass
 # *effective* averages a real GGUF file lands near (quantized formats keep a few
 # tensors at higher precision, so q4 is ~0.5-0.65 in practice, not exactly 0.5).
 BYTES_PER_PARAM = {
-    "fp16": 2.0,   # half precision — what most models are released in
+    "fp16": 2.0,   # half precision, what most models are released in
     "bf16": 2.0,   # same size, different layout
-    "q8": 1.0,     # 8-bit — near-lossless, half the size of fp16
-    "q6": 0.75,    # 6-bit — a common "high quality, smaller" sweet spot
+    "q8": 1.0,     # 8-bit, near-lossless, half the size of fp16
+    "q6": 0.75,    # 6-bit, a common "high quality, smaller" sweet spot
     "q5": 0.65,    # 5-bit
-    "q4": 0.5,     # 4-bit — the laptop default; big size win, small quality cost
-    "q3": 0.4,     # 3-bit — getting risky on quality
-    "q2": 0.3,     # 2-bit — usually too lossy; here for the curve
+    "q4": 0.5,     # 4-bit, the laptop default; big size win, small quality cost
+    "q3": 0.4,     # 3-bit, getting risky on quality
+    "q2": 0.3,     # 2-bit, usually too lossy; here for the curve
 }
 
 # A rough overhead the runtime adds on top of weights + KV (activations, the
@@ -74,7 +73,7 @@ def weights_gb(params_b: float, quant: str = "q4") -> float:
     """GB just for the model weights: params × bytes-per-param.
 
     `params_b` is in BILLIONS (7 for a 7B model). This is the dominant term and
-    often the only one people remember — but the KV cache (below) bites at long
+    often the only one people remember, but the KV cache (below) bites at long
     context.
     """
     return params_b * 1e9 * _bytes_per_param(quant) / 1e9  # = params_b * bytes_per_param
@@ -86,7 +85,7 @@ def kv_cache_gb(params_b: float, context_tokens: int = 4096) -> float:
     The KV cache stores keys+values for every token in context, across every
     layer. The exact size needs the architecture (layers, heads, head_dim); we
     approximate from parameter count, which tracks model dimensions well enough
-    for a "will it fit?" check. It scales LINEARLY with context length — which is
+    for a "will it fit?" check. It scales LINEARLY with context length, which is
     why a long context can quietly double your memory.
     """
     # Bytes of fp16 KV per token, per billion params. Calibrated to land near real
@@ -119,7 +118,7 @@ def fits_in(available_gb: float, params_b: float, quant: str = "q4", context_tok
     """True if a model of this size/quant/context fits in `available_gb`.
 
     Use your free RAM for CPU inference, or your GPU's VRAM for GPU inference.
-    Leave some slack — an estimate that *just* fits will likely swap and crawl.
+    Leave some slack; an estimate that *just* fits will likely swap and crawl.
     """
     return model_memory_gb(params_b, quant, context_tokens).total_gb <= available_gb
 

@@ -1,12 +1,11 @@
 """
-hands_on/local_chat.py — the capstone: a fully-local, zero-cost chat CLI.
-=========================================================================
+hands_on/local_chat.py: the capstone: a fully-local, zero-cost chat CLI.
 
 Everything in the repo, wired into one tool you'd actually use: a streaming,
 multi-turn chat assistant that runs entirely on your machine. No API key, no
 per-token bill, no data leaving the laptop. It pulls together:
 
-  - the OpenAI SDK pointed at localhost   (the whole "local" trick — providers.py)
+  - the OpenAI SDK pointed at localhost   (the whole "local" trick: providers.py)
   - streaming with a live tokens/sec readout   (the performance lesson, §6)
   - multi-turn memory                          (a growing message history)
   - an optional offline fit-check before you start  (sizing, §2)
@@ -63,7 +62,7 @@ def main():
                         help="Offline: print a memory estimate for a model of this many billion params, then exit.")
     args = parser.parse_args()
 
-    # Offline fit-check — needs no server.
+    # Offline fit-check; needs no server.
     if args.fit is not None:
         print(sizing.format_estimate(sizing.model_memory_gb(args.fit, "q4", 4096)))
         print(f"\nFits in 16 GB at q4? {sizing.fits_in(16, args.fit, 'q4')}")
@@ -71,7 +70,7 @@ def main():
 
     providers.ensure_server()  # graceful exit + instructions if nothing is listening
     model = args.model or providers.CHAT_MODEL
-    print(f"Local chat — {providers.describe().replace(providers.CHAT_MODEL, model)}")
+    print(f"Local chat: {providers.describe().replace(providers.CHAT_MODEL, model)}")
 
     history = [{"role": "system", "content": SYSTEM}]
 

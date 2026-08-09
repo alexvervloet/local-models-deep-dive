@@ -5,7 +5,7 @@
 
 # The OpenAI SDK: used as the client for your local server. No OpenAI key or
 # account is needed; the SDK just speaks the protocol your local server answers.
-openai>=1.30.0
+openai>=2.0,<3
 
 # Loads variables from a .env file (LOCAL_MODEL, OPENAI_BASE_URL, ...) into the env.
 python-dotenv>=1.0.0

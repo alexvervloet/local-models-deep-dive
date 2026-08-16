@@ -16,6 +16,7 @@ Uses only the standard library for the core checks, so it runs before `pip insta
 """
 
 import importlib.util
+import json
 import os
 import sys
 import urllib.error
@@ -110,8 +111,6 @@ def _models_at(base_url):
     """Model tags the server reports via GET /v1/models (empty on failure)."""
     try:
         with urllib.request.urlopen(base_url.rstrip("/") + "/models", timeout=2.0) as r:
-            import json
-
             data = json.loads(r.read())
         return [m.get("id", "?") for m in data.get("data", [])]
     except Exception:

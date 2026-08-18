@@ -393,6 +393,10 @@ any order; this sequence builds naturally:
 - [Architecture](https://github.com/alexvervloet/architecture-deep-dive): the seams between the components, each decision measured rather than asserted
 - [Professional Tools](https://github.com/alexvervloet/professional-tools-deep-dive): rebuild each from-scratch primitive with the tool professionals reach for, and measure both
 
+And the whole series lands in one codebase in the
+[capstone](https://github.com/alexvervloet/deep-dive-capstone): a codebase Q&A tool
+built step by step, one tag per dive.
+
 **Local Models is a bonus dive in the series.** It pairs naturally with the two API
 dives (#1-2), since it's their code with one changed `base_url`, and with
 [Fine-tuning](https://github.com/alexvervloet/fine-tuning-deep-dive), which explains

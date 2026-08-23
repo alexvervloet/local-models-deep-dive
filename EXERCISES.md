@@ -102,7 +102,7 @@ GPU box. Which engine, and why not Ollama?
 
 **vLLM**, which is built for serving at scale (continuous batching, high throughput).
 Ollama is fantastic for one user on a laptop but isn't aimed at many-user GPU
-serving. Crucially, **your code is identical either way**; only the `base_url`
+serving. And **your code is identical either way**. Only the `base_url`
 changes.
 </details>
 

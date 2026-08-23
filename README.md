@@ -1,46 +1,45 @@
 # Local Models: A Guided Deep Dive
 
-A hands-on playground for running **open-weight LLMs on your own machine**, and
-discovering that "local" is mostly an *operations* choice, not a new API. You'll
-serve a model with Ollama, talk to it with the exact same OpenAI SDK from the API
-deep dives (one changed URL), and understand every moving part: model sizing,
-quantization, serving engines, performance, local embeddings, structured output,
-and the real local-vs-hosted tradeoff. No framework magic, just enough code to
-*see* how it works.
+A hands-on playground for running open-weight LLMs on your own machine, and discovering
+that running local is mostly an operations choice rather than a new API. You'll serve a
+model with Ollama, talk to it with the exact same OpenAI SDK from the API deep dives with
+one changed URL, and understand every moving part. Model sizing, quantization, serving
+engines, performance, local embeddings, structured output, and the real local-against-hosted
+tradeoff. No framework magic, just enough code to see how it works.
 
-The hook that makes this repo click: **open-weight models speak the
-OpenAI-compatible API.** So the client you already know works against a model on
-your laptop by changing `base_url` and nothing else, and there's no API key and no
-per-token bill anywhere in this repo. The one offline section (the sizing
-calculator) runs with nothing installed at all; the rest need only a local runtime.
+Here is the hook that makes this repo click. Open-weight models speak the OpenAI-compatible
+API. So the client you already know works against a model on your laptop by changing
+`base_url` and nothing else, and there is no API key and no per-token bill anywhere in this
+repo. The one offline section, the sizing calculator, runs with nothing installed at all.
+The rest need only a local runtime.
 
-This repo is **standalone**: it teaches everything it needs on its own. It's the
-full version of the "use a local model" footnote in the
+This repo is standalone and teaches everything it needs on its own. It is the full version
+of the "use a local model" footnote in the
 [OpenAI](https://github.com/alexvervloet/openai-api-deep-dive) and
 [Prompt Engineering](https://github.com/alexvervloet/prompt-engineering-deep-dive) dives,
-and it's the place the [Fine-tuning dive](https://github.com/alexvervloet/fine-tuning-deep-dive)
-points to for *running* open weights, but its code depends on none of them.
+and it is where the
+[Fine-tuning dive](https://github.com/alexvervloet/fine-tuning-deep-dive) points for
+running open weights. Its code depends on none of them.
 
-Like its siblings, it's meant to be *walked through*. Each section ends with
-something to run; the first runs **offline and free**, with no server even needed.
-[EXERCISES.md](EXERCISES.md) has a predict-then-run prompt for each section.
+Like its siblings, walk through it. Each section ends with something to run, and the first
+runs offline and free with no server needed. [EXERCISES.md](EXERCISES.md) has a
+predict-then-run prompt for each section.
 
 ---
 
 ## 0. The one big idea
 
-> **An open-weight model on your machine speaks the same OpenAI API, so "local"
-> is mostly an *ops* choice: you trade hosted convenience for privacy, cost at
-> volume, offline use, and control.**
+> **An open-weight model on your machine speaks the same OpenAI API, so running local is
+> mostly an ops choice. You trade hosted convenience for privacy, cost at volume, offline
+> use, and control.**
 
-That's the whole repo. The first time you point the OpenAI SDK at
-`http://localhost:11434/v1` and get an answer back with no key, the trick is
-revealed: the *code* doesn't change, the *operations* do. Everything below 
-sizing a model to your RAM, picking a quantization, choosing a serving engine,
-reading tokens/sec, is about running that model *well* on hardware you own. And
-because there's no provider doing the work, "will it even fit?" becomes a question
-you answer with arithmetic before you download a thing. Hold onto that and none of
-this feels complicated.
+That is the whole repo. The first time you point the OpenAI SDK at
+`http://localhost:11434/v1` and get an answer back with no key, the trick shows itself. The
+code doesn't change. The operations do. Everything below, from sizing a model to your RAM
+to picking a quantization, choosing a serving engine, and reading tokens per second, is
+about running that model well on hardware you own. And because no provider is doing the
+work, "will it even fit?" becomes a question you answer with arithmetic before you download
+a thing. Hold onto that and none of this feels complicated.
 
 ---
 
@@ -65,9 +64,9 @@ ollama pull llama3.2
 python check_setup.py
 ```
 
-Unlike its siblings, this repo has **no API key**; the model runs on your machine.
-What it needs instead is a **local server**. Ollama is the default; any
-OpenAI-compatible runtime works by setting `OPENAI_BASE_URL`:
+Unlike its siblings, this repo has no API key, because the model runs on your machine. What
+it needs instead is a local server. Ollama is the default, and any OpenAI-compatible runtime
+works by setting `OPENAI_BASE_URL`.
 
 | Runtime | `OPENAI_BASE_URL` | Notes |
 |---------|-------------------|-------|
@@ -76,26 +75,26 @@ OpenAI-compatible runtime works by setting `OPENAI_BASE_URL`:
 | llama.cpp | `http://localhost:8080/v1` | Maximum control over GGUF files & flags. |
 | vLLM | `http://localhost:8000/v1` | High-throughput GPU serving for many users. |
 
-> **The whole repo is free, and Section 2 needs nothing at all.** The sizing
-> calculator is pure arithmetic, so run it before you install a runtime. Everything
-> else needs a local server up, but never a key and never a cent.
+> **The whole repo is free, and Section 2 needs nothing at all.** The sizing calculator is
+> pure arithmetic, so run it before you install a runtime. Everything else needs a local
+> server up, and never a key or a cent.
 
 ---
 
-## 2. Will it fit?: sizing & quantization math
+## 2. Will it fit? Sizing and quantization math
 
 ```bash
 python examples/01_quant_math.py     # offline, no server needed
 ```
 
-The most useful local-models skill is arithmetic you do *before* downloading
-anything: **how much memory will this model need?** One formula answers it 
+The most useful local-models skill is arithmetic you do before downloading anything. How
+much memory will this model need? One formula answers it:
 `memory ≈ parameters × bytes-per-parameter (+ KV cache + overhead)`, where
-bytes-per-parameter is set by the **quantization** (fp16 = 2.0, q8 ≈ 1.0, q4 ≈
-0.5). The example prints the size of a model at every quant level, shows how the KV
-cache grows with context length (a quiet memory eater), and answers the practical
-question: *given my RAM, the best version of this model I can run.* It needs no
-server, no model, no key.
+bytes-per-parameter is set by the quantization (fp16 = 2.0, q8 is about 1.0, q4 is about
+0.5). The example prints the size of a model at every quant level, shows how the KV cache
+grows with context length, which eats memory without announcing itself, and answers the
+practical question: given my RAM, what is the best version of this model I can run? It needs
+no server, no model, and no key.
 
 ---
 
@@ -105,12 +104,12 @@ server, no model, no key.
 python examples/02_first_local_request.py
 ```
 
-The repo's whole idea in one script. The chat call below is the *same*
-`client.chat.completions.create` you'd make against OpenAI, with the same messages and
-same response shape, and the only difference lives in [local/providers.py](local/providers.py):
-`base_url` points at your machine instead of `api.openai.com`. No key, no cost. If
-no server is running, the script tells you how to start one and exits cleanly 
-it can't charge you, because there's nothing to charge.
+The repo's whole idea in one script. The chat call below is the same
+`client.chat.completions.create` you would make against OpenAI, with the same messages and
+the same response shape. The only difference lives in
+[local/providers.py](local/providers.py), where `base_url` points at your machine instead of
+`api.openai.com`. No key, no cost. If no server is running, the script tells you how to
+start one and exits cleanly. It cannot charge you, because there is nothing to charge.
 
 ---
 
@@ -120,57 +119,55 @@ it can't charge you, because there's nothing to charge.
 python examples/03_pick_a_model.py
 ```
 
-"Which model?" has two halves: capability (bigger ≈ smarter, to a point) and
-whether it fits (Section 2's math). The example lists what your server has pulled,
-then maps the popular small families (Llama 3.x, Qwen2.5, Phi, Mistral, Gemma) to
-their sizes and a fit estimate. Rules of thumb: **3B** is fast and fine for simple
-work; **7–8B** is the laptop sweet spot; pick an **instruct** tag for assistant
-tasks; and a higher-quality quant of a *smaller* model usually beats a crushed
-quant of a bigger one.
+"Which model?" has two halves. Capability, where bigger is roughly smarter up to a point,
+and whether it fits, which is Section 2's math. The example lists what your server has
+pulled, then maps the popular small families (Llama 3.x, Qwen2.5, Phi, Mistral, Gemma) to
+their sizes and a fit estimate. Rules of thumb. 3B is fast and fine for simple work. 7B to
+8B is the laptop sweet spot. Pick an instruct tag for assistant tasks. And a higher-quality
+quant of a smaller model usually beats a crushed quant of a bigger one.
 
 ---
 
-## 5. Quantization in practice: size vs. quality vs. speed
+## 5. Quantization in practice: size, quality, speed
 
 ```bash
 python examples/04_quantization_tradeoff.py
 ```
 
-Section 2 sized quantization; this one is about its *cost*. Fewer bits means a
-smaller file, less memory, and often faster generation, at some quality cost. For
-most tasks **q4–q6 is the sweet spot**: most of the quality, a fraction of the
-size. The example shows the tradeoff table offline, then (if a server is up)
-measures real tokens/sec so you can feel it. Start at q4; go up to q6/q8 if you
-have memory to spare.
+Section 2 sized quantization. This one is about what it costs. Fewer bits means a smaller
+file, less memory, and often faster generation, at some cost in quality. For most tasks q4
+to q6 is the sweet spot: most of the quality, a fraction of the size. The example shows the
+tradeoff table offline, then measures real tokens per second if a server is up, so you can
+feel it. Start at q4 and go up to q6 or q8 if you have memory to spare.
 
 ---
 
-## 6. Serving engines: Ollama vs. llama.cpp vs. vLLM
+## 6. Serving engines: Ollama, llama.cpp, vLLM
 
 ```bash
 python examples/05_serving_engines.py
 ```
 
-The model is a file; a **serving engine** loads it and answers requests. They all
-expose the same OpenAI-compatible API (that's why your code never changes), but
-trade off ease vs. control vs. scale. The example probes the common ports and tells
-you what's running, then: **Ollama** for easy/laptop, **llama.cpp** for hand-tuning
-GGUF files, **LM Studio** for a GUI, **vLLM** for high-throughput GPU serving.
+The model is a file. A serving engine loads it and answers requests. They all expose the
+same OpenAI-compatible API, which is why your code never changes, and they trade off ease
+against control against scale. The example probes the common ports and tells you what is
+running. Then: Ollama for easy laptop use, llama.cpp for hand-tuning GGUF files, LM Studio
+for a GUI, vLLM for high-throughput GPU serving.
 
 ---
 
-## 7. Performance: time-to-first-token & tokens/sec
+## 7. Performance: time-to-first-token and tokens per second
 
 ```bash
 python examples/06_performance.py
 ```
 
-Local inference has *two* speeds, and conflating them causes most confusion:
-**time-to-first-token** (the pause while the model *reads your prompt*, the prompt
-processing, not the network) and **generation speed** (tokens/sec once it starts).
-The example streams a reply, measures both, then shows that a longer prompt mostly
-grows TTFT while generation speed barely moves. Takeaway: keep prompts tight for
-snappy responses; the first call after load is always the slowest.
+Local inference has two speeds, and conflating them causes most of the confusion.
+Time-to-first-token is the pause while the model reads your prompt, which is prompt
+processing rather than network. Generation speed is tokens per second once it starts. The
+example streams a reply, measures both, then shows that a longer prompt mostly grows TTFT
+while generation speed barely moves. Keep prompts tight for fast responses, and remember
+the first call after load is always the slowest.
 
 ---
 
@@ -180,29 +177,28 @@ snappy responses; the first call after load is always the slowest.
 python examples/07_embeddings.py
 ```
 
-Embeddings (text → vectors, so similar meanings sit close) power search and RAG 
-and they run locally through the same endpoint, just a different model
-(`ollama pull nomic-embed-text`). No per-token embedding bill, ever. The example
-embeds a handful of sentences, ranks them against a query by cosine similarity
-(five lines of standard library, no magic), and retrieves the right one by
-*meaning*: the exact core of the RAG deep dive, for $0.
+Embeddings turn text into vectors so that similar meanings sit close, and they are what
+search and RAG run on. They also run locally through the same endpoint, with a different
+model (`ollama pull nomic-embed-text`). No per-token embedding bill, ever. The example
+embeds a handful of sentences, ranks them against a query by cosine similarity in five lines
+of standard library with no magic, and retrieves the right one by meaning. That is the exact
+core of the RAG deep dive, for $0.
 
 ---
 
-## 9. Structured output & tool calling
+## 9. Structured output and tool calling
 
 ```bash
 python examples/08_structured_and_tools.py
 ```
 
-"Give me JSON" and "call this function" work locally too, but with rougher edges.
-Smaller models follow a schema less reliably and sometimes wrap JSON in prose or
-fences. The fix is the same defensive habit from the API/prompt dives: ask clearly,
-parse forgivingly. The example requests JSON (with `response_format` when the server
-supports it) and parses it defensively, then describes one tool and lets the model
-choose to call it, reporting honestly when a weaker model just answers in text.
-Reliability tracks model size; capable small models (qwen2.5, llama3.1) are good at
-both.
+"Give me JSON" and "call this function" work locally too, with rougher edges. Smaller
+models follow a schema less reliably and sometimes wrap JSON in prose or fences. The fix is
+the same defensive habit from the API and prompt dives. Ask clearly, parse forgivingly. The
+example requests JSON, using `response_format` when the server supports it, and parses it
+defensively. Then it describes one tool and lets the model choose to call it, reporting
+honestly when a weaker model just answers in text. Reliability tracks model size, and
+capable small models like qwen2.5 and llama3.1 are good at both.
 
 ---
 
@@ -212,14 +208,13 @@ both.
 python examples/09_local_vs_hosted.py
 ```
 
-Local isn't better in the abstract. It's a set of tradeoffs, and this is the
-decision laid out so you make it on purpose. **Local wins** on privacy/data
-control, cost at volume, offline use, and no rate limits. **Hosted wins** on peak
-quality, zero ops, elastic scale, and day-one access to the newest models. The
-example prints the scorecard and (if a server is up) measures *your* local latency
-so the speed column isn't hypothetical. The best answer is often **both**: a local
-small model for the common, private, high-volume path, falling back to a hosted
-frontier model for the hard cases.
+Local isn't better in the abstract. It is a set of tradeoffs, and this lays the decision out
+so you make it on purpose. Local wins on privacy and data control, cost at volume, offline
+use, and no rate limits. Hosted wins on peak quality, zero ops, elastic scale, and day-one
+access to the newest models. The example prints the scorecard and measures your own local
+latency if a server is up, so the speed column isn't hypothetical. The best answer is often
+both: a local small model for the common, private, high-volume path, falling back to a
+hosted frontier model for the hard cases.
 
 ---
 
@@ -229,11 +224,11 @@ frontier model for the hard cases.
 python examples/10_run_the_series_locally.py
 ```
 
-The payoff of "local speaks the OpenAI API": the sibling dives (prompt engineering,
-RAG, agents, evals) were built on the OpenAI SDK, so they run against your local
-model with only an env change, with no code edits. The example runs a tiny RAG loop
-(retrieve → ground → answer) entirely on the local server. To point any sibling
-repo here, set this in *its* `.env`:
+This is what "local speaks the OpenAI API" buys you. The sibling dives on prompt
+engineering, RAG, agents, and evals were all built on the OpenAI SDK, so they run against
+your local model with an env change and no code edits. The example runs a tiny RAG loop,
+retrieve then ground then answer, entirely on the local server. To point any sibling repo
+here, set this in its own `.env`:
 
 ```bash
 OPENAI_API_KEY=local                          # any non-empty string; ignored locally
@@ -241,16 +236,16 @@ OPENAI_BASE_URL=http://localhost:11434/v1
 MODEL=llama3.2
 ```
 
-That's the whole change: your whole learning series, now running at zero cost.
+That is the whole change. The whole learning series, now running at zero cost.
 
 ---
 
 ## The capstone: `local_chat.py`
 
-Everything assembled into a tool you'd actually use: a streaming, multi-turn chat
-assistant running entirely on your machine: no key, no bill, nothing leaving the
-laptop. It shows a live tokens/sec readout (Section 7), remembers the conversation,
-and can print an offline fit-estimate before you start (Section 2).
+Everything assembled into a tool you would actually use. A streaming, multi-turn chat
+assistant running entirely on your machine, with no key, no bill, and nothing leaving the
+laptop. It shows a live tokens-per-second readout from Section 7, remembers the
+conversation, and can print an offline fit estimate before you start, from Section 2.
 
 ```bash
 # interactive chat (Ctrl-D or "quit" to exit):
@@ -266,36 +261,35 @@ python hands_on/local_chat.py --model qwen2.5
 python hands_on/local_chat.py --fit 8
 ```
 
-Read [hands_on/local_chat.py](hands_on/local_chat.py); it's just the library
-(`providers.stream` + `sizing`) wired to a CLI. **Suggested exercise:** pull a
-second model (`ollama pull qwen2.5`) and chat with both via `--model`; you'll feel
-the size/speed/quality tradeoff from Sections 4–5 in your own hands.
+Read [hands_on/local_chat.py](hands_on/local_chat.py). It's the library, `providers.stream`
+plus `sizing`, wired to a CLI. **Suggested exercise:** pull a second model with
+`ollama pull qwen2.5` and chat with both via `--model`. You'll feel the size, speed, and
+quality tradeoff from Sections 4 and 5 in your own hands.
 
 ---
 
 ## Where to go next
 
-You've run a model end to end on your own hardware. The frontier is more control
-and more scale:
+You've run a model end to end on your own hardware. What comes next is more control and
+more scale.
 
-- **Fine-tune the open weights you're running**: LoRA/PEFT with
-  `transformers`/`peft`/`trl`; the [Fine-tuning dive](https://github.com/alexvervloet/fine-tuning-deep-dive)
-  explains the concepts, this repo runs the result.
-- **GPU serving with vLLM**: continuous batching and high throughput for many
-  concurrent users.
-- **Bigger models via more memory**: quantized 70B on a 64 GB machine, or
-  multi-GPU.
-- **Speculative decoding & draft models**: a small model drafts, a big one
-  verifies, for faster generation.
-- **Embeddings & reranking models locally**: a fully-local RAG stack with no
-  hosted calls at all.
+- **Fine-tune the open weights you're running.** LoRA and PEFT with `transformers`, `peft`,
+  and `trl`. The [Fine-tuning dive](https://github.com/alexvervloet/fine-tuning-deep-dive)
+  explains the concepts, and this repo runs the result.
+- **GPU serving with vLLM.** Continuous batching and high throughput for many concurrent
+  users.
+- **Bigger models through more memory.** A quantized 70B on a 64 GB machine, or multi-GPU.
+- **Speculative decoding and draft models.** A small model drafts, a big one verifies, and
+  generation gets faster.
+- **Embeddings and reranking models locally.** A fully local RAG stack with no hosted calls
+  at all.
 
 ---
 
 ## From teaching code to production
 
-The teaching shortcuts here are what you'd harden once a local model serves real
-traffic:
+The teaching shortcuts here are what you would harden once a local model serves real
+traffic.
 
 | This repo's teaching shortcut | In production |
 |-------------------------------|---------------|
@@ -364,11 +358,11 @@ the OpenAI SDK, one changed URL.
 
 ## The series
 
-This is one of the standalone, hands-on deep dives into building with LLM APIs: eight core, plus the bonus dives listed below.
-Each one stands on its own, with its own setup, examples, and capstone, and they
-all share the same house style: provider-agnostic where it makes sense, built from
-scratch (no frameworks), offline-first examples, and a real capstone. Do them in
-any order; this sequence builds naturally:
+This is one of the standalone, hands-on deep dives into building with LLM APIs. Eight
+core dives, plus the bonus ones listed below. Each one stands on its own, with its own
+setup, examples, and capstone, and they all share one house style. Provider-agnostic
+where it makes sense, built from scratch with no frameworks, offline-first examples, and
+a real capstone at the end. Do them in any order. This sequence builds naturally.
 
 1. [OpenAI API](https://github.com/alexvervloet/openai-api-deep-dive): the API from zero
 2. [Claude API](https://github.com/alexvervloet/claude-api-deep-dive): the same ideas, the Anthropic way
@@ -381,20 +375,20 @@ any order; this sequence builds naturally:
 
 **Bonus dives**, standalone and slotting in where they're most useful:
 
-- [Context Engineering](https://github.com/alexvervloet/context-engineering-deep-dive): manage what's in the window: memory, compaction, assembly
-- [AI Data Engineering](https://github.com/alexvervloet/ai-data-engineering-deep-dive): the corpus behind the index: versions, lineage, ACLs, deletes
-- [Multimodal](https://github.com/alexvervloet/multimodal-deep-dive): images & audio, not just text
+- [Context Engineering](https://github.com/alexvervloet/context-engineering-deep-dive): manage what's in the window, with memory, compaction, and assembly
+- [AI Data Engineering](https://github.com/alexvervloet/ai-data-engineering-deep-dive): the corpus behind the index, with versions, lineage, ACLs, and deletes
+- [Multimodal](https://github.com/alexvervloet/multimodal-deep-dive): images and audio as well as text
 - [Fine-tuning](https://github.com/alexvervloet/fine-tuning-deep-dive): teach a model new behavior by example
-- [MCP](https://github.com/alexvervloet/mcp-deep-dive): serve tools, data & prompts to any LLM over a standard protocol
+- [MCP](https://github.com/alexvervloet/mcp-deep-dive): serve tools, data, and prompts to any LLM over a standard protocol
 - [Local Models](https://github.com/alexvervloet/local-models-deep-dive): run open-weight models on your own machine
-- [Agent Harnesses](https://github.com/alexvervloet/agent-harness-deep-dive): build on the loop: hooks, permissions, sandboxing, subagents
+- [Agent Harnesses](https://github.com/alexvervloet/agent-harness-deep-dive): build on the loop, adding hooks, permissions, sandboxing, and subagents
 - [Realtime Voice](https://github.com/alexvervloet/realtime-voice-deep-dive): low-latency speech-to-speech agents
-- [Observability](https://github.com/alexvervloet/observability-deep-dive): watch a running app over time: drift, quality, alerting, the flywheel
+- [Observability](https://github.com/alexvervloet/observability-deep-dive): watch a running app over time, covering drift, quality, alerting, and the feedback loop
 - [Architecture](https://github.com/alexvervloet/architecture-deep-dive): the seams between the components, each decision measured rather than asserted
-- [GenAI Security](https://github.com/alexvervloet/genai-security-deep-dive): treat the model as an untrusted principal: identity, supply chain, isolation, budgets, release gates
+- [GenAI Security](https://github.com/alexvervloet/genai-security-deep-dive): treat the model as an untrusted principal, and put identity, supply chain, isolation, budgets, and release gates around it
 - [Inference Platform Engineering](https://github.com/alexvervloet/inference-platform-deep-dive): turn finite GPU memory and a request queue into latency, throughput, and a fleet size you can defend
-- [Testing & Delivery](https://github.com/alexvervloet/testing-and-delivery-deep-dive): decide whether a build has earned promotion: evidence, gates, staged rollout, rollback
-- [Professional Tools](https://github.com/alexvervloet/professional-tools-deep-dive): rebuild each from-scratch primitive with the tool professionals reach for, and measure both
+- [Testing & Delivery](https://github.com/alexvervloet/testing-and-delivery-deep-dive): decide whether a build is fit to promote, using evidence, gates, staged rollout, and rollback
+- [Professional Tools](https://github.com/alexvervloet/professional-tools-deep-dive): rebuild each hand-written piece with the tool professionals reach for, and measure both
 
 And the whole series lands in one codebase in the
 [capstone](https://github.com/alexvervloet/deep-dive-capstone): a codebase Q&A tool

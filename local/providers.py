@@ -68,7 +68,7 @@ def client():
 
 # --- The "is anything even running?" probe --------------------------------
 #
-# Crucial for a repo with no hosted fallback: before we make an LLM call we want
+# It matters for a repo with no hosted fallback: before we make an LLM call we want
 # to tell the difference between "server down" (start Ollama) and "model missing"
 # (pull it). This hits the server's root with the stdlib only: no SDK, no model,
 # so it works even before `pip install`.

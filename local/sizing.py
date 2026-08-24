@@ -86,7 +86,7 @@ def kv_cache_gb(params_b: float, context_tokens: int = 4096) -> float:
     layer. The exact size needs the architecture (layers, heads, head_dim); we
     approximate from parameter count, which tracks model dimensions well enough
     for a "will it fit?" check. It scales LINEARLY with context length, which is
-    why a long context can quietly double your memory.
+    why a long context can double your memory before you notice.
     """
     # Bytes of fp16 KV per token, per billion params. Calibrated to land near real
     # modern small models (Llama 3.x / Qwen2.5), which use grouped-query attention

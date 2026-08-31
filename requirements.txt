@@ -8,10 +8,10 @@
 openai>=2.0,<3
 
 # Loads variables from a .env file (LOCAL_MODEL, OPENAI_BASE_URL, ...) into the env.
-python-dotenv>=1.0.0
+python-dotenv>=1.0.0,<2
 
 # Pretty terminal output in the capstone (tables, a live token/sec readout).
-rich>=13.0.0
+rich>=13.0.0,<16
 
 # --- NOT a pip dependency, but required ---
 # A local model runtime must be running. The default is Ollama (https://ollama.com):

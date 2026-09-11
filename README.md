@@ -7,17 +7,17 @@ one changed URL, and understand every moving part. Model sizing, quantization, s
 engines, performance, local embeddings, structured output, and the real local-against-hosted
 tradeoff. No framework magic, just enough code to see how it works.
 
-Here is the hook that makes this repo click. Open-weight models speak the OpenAI-compatible
+Here's the hook that makes this repo click. Open-weight models speak the OpenAI-compatible
 API. So the client you already know works against a model on your laptop by changing
-`base_url` and nothing else, and there is no API key and no per-token bill anywhere in this
+`base_url` and nothing else, and there's no API key and no per-token bill anywhere in this
 repo. The one offline section, the sizing calculator, runs with nothing installed at all.
 The rest need only a local runtime.
 
-This repo is standalone and teaches everything it needs on its own. It is the full version
+This repo is standalone and teaches everything it needs on its own. It's the full version
 of the "use a local model" footnote in the
 [OpenAI](https://github.com/alexvervloet/openai-api-deep-dive) and
 [Prompt Engineering](https://github.com/alexvervloet/prompt-engineering-deep-dive) dives,
-and it is where the
+and it's where the
 [Fine-tuning dive](https://github.com/alexvervloet/fine-tuning-deep-dive) points for
 running open weights. Its code depends on none of them.
 
@@ -33,7 +33,7 @@ predict-then-run prompt for each section.
 > mostly an ops choice. You trade hosted convenience for privacy, cost at volume, offline
 > use, and control.**
 
-That is the whole repo. The first time you point the OpenAI SDK at
+That's the whole repo. The first time you point the OpenAI SDK at
 `http://localhost:11434/v1` and get an answer back with no key, the trick shows itself. The
 code doesn't change. The operations do. Everything below, from sizing a model to your RAM
 to picking a quantization, choosing a serving engine, and reading tokens per second, is
@@ -93,7 +93,7 @@ much memory will this model need? One formula answers it:
 bytes-per-parameter is set by the quantization (fp16 = 2.0, q8 is about 1.0, q4 is about
 0.5). The example prints the size of a model at every quant level, shows how the KV cache
 grows with context length, which eats memory without announcing itself, and answers the
-practical question: given my RAM, what is the best version of this model I can run? It needs
+practical question: given my RAM, what's the best version of this model I can run? It needs
 no server, no model, and no key.
 
 ---
@@ -105,11 +105,11 @@ python examples/02_first_local_request.py
 ```
 
 The repo's whole idea in one script. The chat call below is the same
-`client.chat.completions.create` you would make against OpenAI, with the same messages and
+`client.chat.completions.create` you'd make against OpenAI, with the same messages and
 the same response shape. The only difference lives in
 [local/providers.py](local/providers.py), where `base_url` points at your machine instead of
 `api.openai.com`. No key, no cost. If no server is running, the script tells you how to
-start one and exits cleanly. It cannot charge you, because there is nothing to charge.
+start one and exits cleanly. It can't charge you, because there's nothing to charge.
 
 ---
 
@@ -150,7 +150,7 @@ python examples/05_serving_engines.py
 
 The model is a file. A serving engine loads it and answers requests. They all expose the
 same OpenAI-compatible API, which is why your code never changes, and they trade off ease
-against control against scale. The example probes the common ports and tells you what is
+against control against scale. The example probes the common ports and tells you what's
 running. Then: Ollama for easy laptop use, llama.cpp for hand-tuning GGUF files, LM Studio
 for a GUI, vLLM for high-throughput GPU serving.
 
@@ -177,11 +177,11 @@ the first call after load is always the slowest.
 python examples/07_embeddings.py
 ```
 
-Embeddings turn text into vectors so that similar meanings sit close, and they are what
+Embeddings turn text into vectors so that similar meanings sit close, and they're what
 search and RAG run on. They also run locally through the same endpoint, with a different
 model (`ollama pull nomic-embed-text`). No per-token embedding bill, ever. The example
 embeds a handful of sentences, ranks them against a query by cosine similarity in five lines
-of standard library with no magic, and retrieves the right one by meaning. That is the exact
+of standard library with no magic, and retrieves the right one by meaning. That's the exact
 core of the RAG deep dive, for $0.
 
 ---
@@ -208,7 +208,7 @@ capable small models like qwen2.5 and llama3.1 are good at both.
 python examples/09_local_vs_hosted.py
 ```
 
-Local isn't better in the abstract. It is a set of tradeoffs, and this lays the decision out
+Local isn't better in the abstract. It's a set of tradeoffs, and this lays the decision out
 so you make it on purpose. Local wins on privacy and data control, cost at volume, offline
 use, and no rate limits. Hosted wins on peak quality, zero ops, elastic scale, and day-one
 access to the newest models. The example prints the scorecard and measures your own local
@@ -236,13 +236,13 @@ OPENAI_BASE_URL=http://localhost:11434/v1
 MODEL=llama3.2
 ```
 
-That is the whole change. The whole learning series, now running at zero cost.
+That's the whole change. The whole learning series, now running at zero cost.
 
 ---
 
 ## The capstone: `local_chat.py`
 
-Everything assembled into a tool you would actually use. A streaming, multi-turn chat
+Everything assembled into a tool you'd actually use. A streaming, multi-turn chat
 assistant running entirely on your machine, with no key, no bill, and nothing leaving the
 laptop. It shows a live tokens-per-second readout from Section 7, remembers the
 conversation, and can print an offline fit estimate before you start, from Section 2.
@@ -288,7 +288,7 @@ more scale.
 
 ## From teaching code to production
 
-The teaching shortcuts here are what you would harden once a local model serves real
+The teaching shortcuts here are what you'd harden once a local model serves real
 traffic.
 
 | This repo's teaching shortcut | In production |

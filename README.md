@@ -58,7 +58,7 @@ cp .env.example .env
 
 # 4. Install a local runtime and pull a small model
 #    Ollama is the easiest (https://ollama.com):
-ollama pull llama3.2
+ollama pull qwen3:4b
 
 # 5. Confirm everything is wired up (no hosted call, costs nothing)
 python check_setup.py
@@ -198,7 +198,7 @@ the same defensive habit from the API and prompt dives. Ask clearly, parse forgi
 example requests JSON, using `response_format` when the server supports it, and parses it
 defensively. Then it describes one tool and lets the model choose to call it, reporting
 honestly when a weaker model just answers in text. Reliability tracks model size, and
-capable small models like qwen2.5 and llama3.1 are good at both.
+capable small models like qwen3:8b and gemma3:4b are good at both.
 
 ---
 
@@ -233,7 +233,7 @@ here, set this in its own `.env`:
 ```bash
 OPENAI_API_KEY=local                          # any non-empty string; ignored locally
 OPENAI_BASE_URL=http://localhost:11434/v1
-MODEL=llama3.2
+MODEL=qwen3:4b
 ```
 
 That's the whole change. The whole learning series, now running at zero cost.
@@ -255,7 +255,7 @@ python hands_on/local_chat.py
 python hands_on/local_chat.py "Explain quantization in one sentence."
 
 # use a specific model you've pulled:
-python hands_on/local_chat.py --model qwen2.5
+python hands_on/local_chat.py --model qwen3:8b
 
 # offline: estimate memory for an 8B model before running anything:
 python hands_on/local_chat.py --fit 8
@@ -263,7 +263,7 @@ python hands_on/local_chat.py --fit 8
 
 Read [hands_on/local_chat.py](hands_on/local_chat.py). It's the library, `providers.stream`
 plus `sizing`, wired to a CLI. **Suggested exercise:** pull a second model with
-`ollama pull qwen2.5` and chat with both via `--model`. You'll feel the size, speed, and
+`ollama pull qwen3:8b` and chat with both via `--model`. You'll feel the size, speed, and
 quality tradeoff from Sections 4 and 5 in your own hands.
 
 ---
@@ -341,12 +341,12 @@ Run `python check_setup.py` first; it catches most problems. Then, by symptom:
 
 | What you see | What it means / the fix |
 |--------------|-------------------------|
-| `No server is answering at http://localhost:11434/v1` | No runtime is up. Install/start Ollama and `ollama pull llama3.2`. Or set `OPENAI_BASE_URL` to your engine's port. |
+| `No server is answering at http://localhost:11434/v1` | No runtime is up. Install/start Ollama and `ollama pull qwen3:4b`. Or set `OPENAI_BASE_URL` to your engine's port. |
 | The call fails with "model not found" | The tag isn't pulled. `ollama list` shows what you have; `ollama pull <tag>` to get it. Tags must match exactly. |
 | First response is very slow, later ones fast | Normal: the first call **loads the model into memory** and processes the prompt. That's TTFT (Section 7), not a bug. |
 | Generation is painfully slow / the machine swaps | The model spilled out of RAM/VRAM. Use a **smaller model or lower quant**, and check the fit with Section 2 first. |
 | Embeddings example errors | The embed model isn't pulled: `ollama pull nomic-embed-text`. |
-| Tool calling just returns text | Your model is weak at tools. Try `qwen2.5` or `llama3.1`; reliability tracks model size (Section 9). |
+| Tool calling just returns text | Your model is weak at tools. Try `qwen3:8b` or `gemma3:4b`; reliability tracks model size (Section 9). |
 | `ModuleNotFoundError` (openai / rich) | Dependencies aren't installed or the venv isn't active. `source .venv/bin/activate` then `pip install -r requirements.txt`. |
 | `SyntaxError` / odd type errors on startup | You're likely on Python 3.9 or older; this repo needs 3.10+. `check_setup.py` confirms your version. |
 

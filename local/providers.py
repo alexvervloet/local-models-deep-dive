@@ -39,8 +39,8 @@ load_dotenv()
 BASE_URL = os.getenv("OPENAI_BASE_URL", "http://localhost:11434/v1")
 
 # The model tag to talk to. With Ollama this is whatever you `ollama pull`ed
-# (e.g. "llama3.2", "qwen2.5", "phi3.5"). See README section 3 for picking one.
-CHAT_MODEL = os.getenv("LOCAL_MODEL", "llama3.2")
+# (e.g. "qwen3:4b", "gemma3:4b", "qwen3:8b"). See README section 3 for picking one.
+CHAT_MODEL = os.getenv("LOCAL_MODEL", "qwen3:4b")
 
 # A small local embedding model, used by the embeddings example (section 7).
 EMBED_MODEL = os.getenv("LOCAL_EMBED_MODEL", "nomic-embed-text")

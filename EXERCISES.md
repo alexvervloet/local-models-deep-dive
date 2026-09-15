@@ -157,8 +157,8 @@ wrapped in ```` ```json ```` fences. Is that a failure? What does the example do
 
 Not a failure. Small models drift more than hosted ones. The example **strips the
 fences before `json.loads`**, the same defensive parsing you learned for hosted
-models. Lower temperature, a tighter prompt, or a stronger model (qwen2.5,
-llama3.1) all help reliability.
+models. Lower temperature, a tighter prompt, or a stronger model (qwen3:8b,
+gemma3:4b) all help reliability.
 </details>
 
 ---
@@ -206,7 +206,7 @@ line is the **generation speed** (Section 7) of your machine on each reply, plus
 time-to-first-token.
 </details>
 
-**Stretch.** Pull a second model (`ollama pull qwen2.5`) and chat with both via
+**Stretch.** Pull a second model (`ollama pull qwen3:8b`) and chat with both via
 `--model`. Do you feel the size/speed/quality tradeoff from Sections 4–5? Then point
 a *sibling* repo at your local server (Section 11) and run its capstone for free 
 the first time the RAG or agents dive runs with no key and no bill, "local is an ops

@@ -120,7 +120,7 @@ def _models_at(base_url):
 def check_server(env):
     print("\nLocal model server")
     base_url = _get(env, "OPENAI_BASE_URL", "http://localhost:11434/v1")
-    model = _get(env, "LOCAL_MODEL", "llama3.2")
+    model = _get(env, "LOCAL_MODEL", "qwen3:4b")
     root = base_url.removesuffix("/v1").rstrip("/") or base_url
 
     if not _probe(root):

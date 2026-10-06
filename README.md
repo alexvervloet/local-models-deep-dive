@@ -348,7 +348,7 @@ Run `python check_setup.py` first; it catches most problems. Then, by symptom:
 | Embeddings example errors | The embed model isn't pulled: `ollama pull nomic-embed-text`. |
 | Tool calling just returns text | Your model is weak at tools. Try `qwen3:8b` or `gemma3:4b`; reliability tracks model size (Section 9). |
 | `ModuleNotFoundError` (openai / rich) | Dependencies aren't installed or the venv isn't active. `source .venv/bin/activate` then `pip install -r requirements.txt`. |
-| `SyntaxError` / odd type errors on startup | You're likely on Python 3.9 or older; this repo needs 3.10+. `check_setup.py` confirms your version. |
+| `SyntaxError` / odd type errors on startup | You're likely on Python 3.10 or older; this repo needs 3.11+. `check_setup.py` confirms your version. |
 
 Still stuck? Every file is small and self-contained. Open it, read the docstring
 at the top, and run it. [local/providers.py](local/providers.py) is the whole story:
